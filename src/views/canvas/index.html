@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>绘制canvas</title>
+
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script>
+    draw();
+    function draw() {
+      var canvas = document.getElementById('canvas')
+      var cxt = canvas.getContext('2d')
+      console.log('cxt:', cxt)
+      cxt.beginPath()
+      // 画线
+      cxt.moveTo(20, 30);
+      cxt.lineTo(100, 100);
+      // 线条展现
+      cxt.strokeStyle = 'red';
+      cxt.stroke()
+
+      // 巨型
+      cxt.fillRect(100,100, 50, 50)
+      cxt.
+    }
+  </script>
+</html>

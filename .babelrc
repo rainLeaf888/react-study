@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "transform-decorators-legacy",
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ]
+  ]
+}
