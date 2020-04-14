@@ -303,7 +303,7 @@ function test () {
     Access-Control-Allow-Credentials: true
     Access-Control-Allow-Headers: higher_priority_type,source,wpage_config,DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Origin,Content-Type,Accept,Authorization,rbac_source,deviceid,token,method,x-source,x-pingother,ws_app_source
     Access-Control-Allow-Methods: GET, POST, OPTIONS
-    Access-Control-Allow-Origin: http://w2.athena.dev.wormpex.com
+    Access-Control-Allow-Origin: http://www.baidu.com
   ```
 
 ## 缓存
