@@ -136,19 +136,3 @@ function quickSort (nums) {
 
 //六.TODO 堆排序 Head Sort 时间复杂度： O(nlogn)
 // 建堆
-
-
-
-// 二叉树的所有路径
-var binaryTreePaths = function(root, list =[]) {
-  if (root) {
-     binaryTree(root, `${root.val}`, list);
-  }
-  return list;
-};
-
-function binaryTree (root, str, list) {
-    if (!root.left && !root.right) list.push(str);
-    if (root.left) binaryTree(root.left, `${str}->${root.left.val}`, list)
-    if (root.right) binaryTree(root.right, `${str}->${root.right.val}`, list);
-}

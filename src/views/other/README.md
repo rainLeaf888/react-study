@@ -162,14 +162,14 @@ function test () {
     当超过一段时间之后，TCP自动发送一个数据为空的报文（侦测包）给对方，如果对方回应了这个报文，说明对方还在线，连接可以继续保持，如果对方没有报文返回，并且重试了多次之后则认为链接丢失，没有必要保持连接
 
 ### http1.1和http2.0
-  * htt1.0:
+  * htt1.1:
 
     tcp连接持久化，Connection: keep-alive;
 
     浏览器客户端在同一时间，针对同一域名下的请求有一定数量的限制。超过限制数目的请求会被阻塞。(服务端会有连接限制)
   * http2.0:
     1. 二进制分帧
-    2. 多路复用
+    2. 多路复用 （服务端需要设置 listen  443 ssl http2;）
     3. HTTP首部压缩（采用HPACK算法）
     4. 服务器推送
 
@@ -228,7 +228,7 @@ function test () {
   })
   ```
 ### vue双向绑定如何实现的？
-1. 发布订阅模式
+1. 发布订阅模式(借助Dep, Dep 管理所有Watcher对象)
 2. Object.defineProperty get，set数据劫持
 ### vueEventBus的$once实现？
 ```
@@ -266,7 +266,7 @@ function test () {
     Promise.prototype.finally = function(callback) {
       let P = this.constructor; // 执行Promise函数本身
       // this 执行Promise实例
-      this.then((value) => {
+     return this.then((value) => {
         return P.resolve(callback).then(() => value)
       }, (reason) => { // 还是reject状态，不变化
         return P.resolve(callback).then(() => throw reason);

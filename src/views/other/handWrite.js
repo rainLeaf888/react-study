@@ -35,7 +35,7 @@ function getJson(url) {
   })
 }
 
-// getJson('http://zz.wormpex.com/baseinfo/productImage/201908/27/af9e81bde5623b5fc6f4ce01.medium.png').then((json) => {
+// getJson('http://xx/baseinfo/productImage/201908/27/af9e81bde5623b5fc6f4ce01.medium.png').then((json) => {
 //    console.log('json:', json)
 // }, (error) => {
 //     console.log('error', error)
@@ -51,7 +51,7 @@ function getJson(url) {
 //   const reqList = []
 //   Array.from({length: 12}, (v, i) => {
 //     const req = () =>new Promise((resovle) => {
-//       fetch(`https://ams.corp.bianlifeng.com/mock/298/api/demo/detail?id=1&_time=${new Date().getTime()}`)
+//       fetch(`https://xxx/mock/298/api/demo/detail?id=1&_time=${new Date().getTime()}`)
 //       .then(res => {
 //         setTimeout(() => {
 //           resovle(res.json())
@@ -181,7 +181,7 @@ function promiseRace (list) {
 Promise.prototype.finally = function(callback) {
   let P = this.constructor; // 执行Promise函数本身
   // this 执行Promise实例
-  this.then((value) => {
+  return this.then((value) => {
     return P.resolve(callback).then(() => value)
   }, (reason) => { // 还是reject状态，不变化
     return P.resolve(callback).then(() => throw reason);
