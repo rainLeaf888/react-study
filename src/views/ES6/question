@@ -1,0 +1,106 @@
+头条面试：
+业务和技术 痛点，是否看过vue-cli create-react-app脚手架如何实现的
+微服务 （一个系统，多个项目不同技术框架）
+for of   getOwnPropertyNames， for in  object.keys
+http keep-alive
+http 4 次 3次  为什么不是两次握手， 为啥不是3次关闭
+event loop
+跨越  jsonp 实现原理； ng Access-allow 具体明细
+实现一个promise
+mixin 在哪里执行的？ Vue.prototype._init 方法
+Vue 是如何监测数组变化的
+
+
+二叉树 路径求和
+function getSum(root) {
+    
+}
+
+function TreeNode(value, left, right) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
+}
+
+var x = new TreeNode(4);
+var y = new TreeNode(5);
+var z = new TreeNode(6);
+var left = new TreeNode(2, x, y);
+var right = new TreeNode(3, z);
+var root = new TreeNode(1, left, right);
+
+滴滴：
+Babel import 如何实现按需
+webpack4  tree  shaking  哪些情况代码打包不会去掉
+webpack 如何打包多页应用
+react firbe 优点
+setState
+http2 多路复用 好处
+linklist 内部有环 判断
+
+css不规则曲线 a: [1,2,3,4]. b[2,3,4]  返回 第一个位索引 1；  a: [1,2,3,4]  b: [1,2,4]. 返回-1； a: [1,2,3,4] b: [4,3,2]  返回-1  jwt
+Crsf 概览，如何实现的这种攻击
+Xss 概览，如何实现的这种攻击 webpack 打包之后浏览器如何识别这些模块 webpack  如何编译成es5 浏览器可识别的？
+Webpack loader如何执行，如何实现？ babel 第三方插件如何按需，第三方需要组件需要做什么？ htt2  多路复用，服务端怎么配置 ？ ng  ^~  $  /  = 这些区别
+Express. Koa 区别
+Vue组件通讯实现方式
+
+判断是否为对称二叉树？
+多数之合（两数之后延伸）
+
+  function a () {   a = 1 let a ; console.log(a) } 
+美团：
+移动端 300ms 延迟
+移动端 点击穿透
+移动端自适应怎么处理
+prefetch prereload
+webpack3  和 webpack4 区别
+glup 和webpack区别
+node  pm2  协助处理进程， node 本身的cluster可以处理
+Cors 普通资源（简单请求）跨域 （浏览器同源策略自动带上origin，response header中返回支持的域名）
+
+滴滴：
+1.https 里 http请求 会直接报错
+2. hook 和 class 组件 ==》useEffect  componetDidMount   componetDidUpdate
+
+
+1.new  原型指定 __proto__  = fn.prototype
+2.同源策略 浏览器请求数限制
+3.事件
+4.Map
+5.react 优化  functianal purecomponent  shouldcomponet 有优化
+6.react vue 对比
+7.事件循环 event loop
+
+
+实现一个下拉框需要考虑哪些
+1.消抖
+2.接口时许问题
+3.下拉列表位置
+
+深拷贝
+
+快排序
+
+前序后序遍历
+// 输出顺序
+window.addEventListener('click', () => {
+  new Promise((resolve, reject) => {
+    console.log(1)
+    resolve();
+  }).then(() => {
+    console.log(2)
+  })
+
+}, false)
+window.addEventListener('click', () => {
+  new Promise((resolve, reject) => {
+    console.log(3)
+    resolve();
+  }).then(() => {
+    console.log(4)
+  })
+}, false)
+console.log('11')
+
+fiber
