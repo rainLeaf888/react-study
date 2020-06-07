@@ -1,4 +1,4 @@
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
 
 function countReducer(state = 0, action) {
   switch(action.type) {
@@ -7,10 +7,15 @@ function countReducer(state = 0, action) {
     case 'MINUS':
       return state - 1;
     default:
-      break;
+      return 0;
   }
 }
 
-const store = createStore(countReducer)
+// 连接多个reducer
+const reducer = combineReducers({
+  count: countReducer
+})
+const store = createStore(reducer)
+// const store = createStore(countReducer)
 
 export default store

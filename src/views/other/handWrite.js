@@ -65,9 +65,36 @@ function getJson(url) {
 // })();
 
 
-// promise实现并发3个请求
+// promise实现批量请求并发，但最多只有3个请求
 // Promise.race 替换即可改变状态的promise
+function limitLoad(urls, handler, limit) {
+  // 对数组做一个拷贝
+  const sequence = [].concat(urls)
+  let promises = [];
 
+  //并发请求到最大数
+  promises = sequence.splice(0, limit).map((url, index) => {
+      // 这里返回的 index 是任务在 promises 的脚标，
+      //用于在 Promise.race 之后找到完成的任务脚标
+      return handler(url).then(() => {
+          return index;
+      });
+  });
+
+  (async function loop() {
+      let p = Promise.race(promises);
+      // TODO i 应该从limit开始
+      for (let i = 0; i < sequence.length; i++) {
+          p = p.then((res) => {
+              promises[res] = handler(sequence[i]).then(() => {
+                  return res
+              });
+              return Promise.race(promises)
+          })
+      }
+  })()
+}
+// limitLoad(urls, loadImg, 3)
 
 
 
@@ -280,11 +307,17 @@ Function.prototype.myBind = function(context) {
 
 
 // 防抖简写版
-function debounce(fn, delay) {
+function debounce(fn, delay) { // fn 参数问题及this指向
   let timer = null;
   return function() {
-    clearTimeout(timer);
-    timer = setTimeout(fn, delay)
+    if (timer) {
+      clearTimeout(timer);
+    }
+    const args = [...arguments];
+    const self = this;
+    timer = setTimeout(() => {
+      fn.apply(self, args);
+    }, delay)
   }
 }
 // 截流 简写版
@@ -292,7 +325,9 @@ function throttle(fn, delay) {
   let timer = null;
   let startTime = new Date().getTime();
   return function() {
-    clearTimeout(timer);
+    if (timer) {
+      clearTimeout(timer);
+    }
     let currentTime = new Date().getTime()
     if (currentTime - startTime > delay) {
       startTime = currentTime;
@@ -464,6 +499,55 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
   if(me.status === PENDING) {
     me.resolveTasks.push(onFulfilled);
     me.rejectTasks.push(onRejected);
+  }
+}
+
+// 实现一个带并发限制的异步调度器 Scheduler，保证同时运行的任务最多有两个。
+// 完善下面代码中的 Scheduler 类，使得以下程序能正确输出。
+class Scheduler {
+  add(promiseCreator) { }
+  // ...
+}
+
+const timeout = (time) => new Promise(resolve => {
+  setTimeout(resolve, time)
+})
+
+const scheduler = new Scheduler()
+const addTask = (time, order) => {
+  scheduler.add(() => timeout(time)).then(() => console.log(order))
+}
+addTask(1000, '1')
+addTask(500, '2')
+addTask(300, '3')
+addTask(400, '4')
+// TODO 最后的顺序 2，3，1，4
+// 队列实现
+
+
+// 实现一个el
+const el = require('./element.js');
+const ul = el('ul', {id: 'list'}, [
+  el('li', {class: 'item'}, ['Item 1']),
+  el('li', {class: 'item'}, ['Item 2']),
+  el('li', {class: 'item'}, ['Item 3'])
+])
+const ulRoot = ul.render();
+document.body.appendChild(ulRoot);
+
+function CreateEl(type, props, children) {
+  return {
+      render: () => {
+       const node = document.createElement(type);
+      const childs = children.map(child => {
+      if (typeof child === 'string') { // 字符串
+        return  document.createTextNode(child)
+      } else { // 返回object
+         return  child.render()
+      }
+       })
+       node.appendChild(childs)
+    }
   }
 }
 

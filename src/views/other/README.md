@@ -1,6 +1,6 @@
 # 面试积累
 * [基础](#基础)
-* [CSS](#CSS)
+* [CSS和移动端](#CSS和移动端)
 * [浏览器Event Loop](#浏览器EventLoop)
 * [http](#http)
   * [http1.1 和 http2.0](#http1.1和http2.0)
@@ -20,6 +20,7 @@
 * [安全](#安全)
 * [nginx](#nginx)
 * [webpack babel](#webpack)
+* [node](#node)
 ## 基础
 * html5 语义标签
   * 语义标签: header、article、nav、main、section、footer
@@ -35,8 +36,18 @@
     2. document.getElmentById('id').getContext('2d')
     3. 在使用2上实例方法
   * Canvas 和 Svg 区别
+* jpg 和png 区别
+  * jpg: 使用的一种失真压缩标准方法，24 bit真彩色，内容比GIF丰富，不支持动画、不支持透明色
+  * png: 格式是无损数据压缩的,PNG格式有8位、24位、32位三种形式,其中8位PNG支持两种不同的透明形式
+* 防抖(debounce) : 在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时
 
-## CSS
+  应用场景：
+  * resize/scroll 触发统计事件
+  * 文本输入验证，不用用户输一个文字调用一次ajax请求，随着用户的输入验证一次就可以
+* 节流(throttle)：在一段固定的时间内只触发一次回调函数
+
+
+## CSS和移动端
 * BFC
   1. 哪些情况会出现BFC？
     * float的值不为none。
@@ -70,12 +81,34 @@
   * em: 参考父元素font-size计算, 具有继承特性
   * rem: 相对于root节点（html）计算；会给根节点设置一个基础font-size 这种比例，如：1rem = 12px，其他根据这个基准计算
   * vw 和vh：视口单位  1vw 等于视口宽度的1%
+* 移动端300ms点击延迟
+
+  原因：为了区分是双击缩放，双击滚动，还是打开一个连接
+
+  解决方案:
+
+  1.禁用缩放
+  ```
+  <meta name="viewport" content="user-scalable=no">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1">
+  ```
+  2. CSS touch-action
+  3. FastClick:
+  实现原理是在检测到touchend事件的时候，会通过DOM自定义事件立即出发模拟一个click事件，并把浏览器在300ms之后的click事件阻止掉
+
+* 移动端点击穿透问题
+  原理：在这 300ms 以内，因为上层元素隐藏或消失了，由于 click 事件的滞后性，同样位置的 DOM 元素触发了 click 事件（如果是 input 则触发了 focus 事件）
+  解决方案：
+  1.只使用touch 替换所有click（最简单）
+* css 实现 点击穿透，虚化
+  pointer-events: none; // 上次是透明图片，下侧button按钮，点击透明图片，能触发button事件
+
 
 * for...in , for...of, Object.keys, Object.getOwnPropertyNames 区别？
   1. for...in: 遍历对象的可枚举属性（包含自有属性、继承自原型的属性），不包含Symbol属性
   2. Object.keys: 遍历对象的可枚举属性(不包含继承自原型的属性及不可枚举的属性和Symbol属性)
   3. Object.getOwnPropertyNames: 返回对象的自有属性（包括可枚举和不可枚举的，不包含继承自原型的属性 和Symbol属性）
-  4. for...of: 遍历实现过Symbol.iterable的属性，输出的是值；1，2，3 方法， 输出是索引
+  4. for...of: 遍历实现过Symbol.iterable的属性，遍历数组时，输出的是 '值'；上述1，2，3 的方法， 输出是索引
   5. Reflect.ownKeys: 返回枚举和不可枚举的属性，包括Symbol属性，不包括继承自原型的属性
 ```
 function test () {
@@ -121,6 +154,11 @@ function test () {
   console.log('Object.keys获取数组属性：', Object.keys(arr))
 }
 ```
+* prefetch 和 preload
+
+  preload：预加载（对当前页面所需的脚本、样式等资源进行预加载，而无需等到解析到 script 和 link 标签时才进行加载）
+
+  prefetch: 加载的资源一般不是用于当前页面的，即未来很可能用到的这样一些资源 利用浏览器空闲时间来下载，当进入下一页面，就可直接从 disk cache 里面取，既不影响当前页面的渲染，又提高了其他页面加载渲染的速度
 
 ## 浏览器EventLoop
   1. 宏任务: setTimeout, setInterval, setImmediate, requestAnimationFrame,I/O, UI rendering
@@ -289,6 +327,14 @@ function test () {
   ```
   这样浏览器会调用callback函数，并传递解析后json对象作为参数。
   4. 本站脚本可在callback函数里处理所传入的数据
+* CORS 域资源共享
+
+  [chorme 80设置跨域会不起作用?](https://juejin.im/post/5e69fdb16fb9a07cb96b0253)
+
+  原因：cookie属性中的SameSite（用来限制第三方cookie的属性）默认Lax
+  * strict 只有当前网页的URL与请求目标一致，才会带上cookie
+  * Lax 稍稍放宽，大多数情况也是不发送第三方cookie
+  * none 显式关闭SameSite属性，必须同时设置Secure属性（cookie只能通过HTTPS协议发送），否则无效
 
 * nginx跨域实现具体详情？
 
@@ -327,7 +373,7 @@ function test () {
      If-Modified-Since 请求
 
      (被请求资源的最后修改时间进行比对，如最后修改时间比较新，则说明最近改动过，响应200；否则响应304)
-  * ETag/If-None-Match (优先级高于Last-Modified)
+  * ETag/If-None-Match (优先级高于Last-Modified) 根据内容计算的哈希值
 * <font color='red'>Vary (属于http缓存控制协议头 )</font>
 
   字段用于列出一个响应字段列表，告诉缓存服务器遇到同一个 URL 对应着不同版本文档的情况时，如何缓存和筛选合适的版
@@ -434,7 +480,7 @@ function test () {
       ```
   * webpack打包后的bundle为什么能在浏览器中运行？
 
-    bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过 __webpack_require__ 函数定义了一个可以在浏览器中执行的加载函数来模拟 Node.js 中的 require 语句
+    bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过  __webpack_require__ 函数定义了一个可以在浏览器中执行的加载函数来模拟 Node.js 中的 require 语句
   * webpack 如何编译成es5 浏览器可识别的代码？
 
     Bable 执行过程和原理：
@@ -444,6 +490,96 @@ function test () {
         2. 语义分析 （遍历tokens，检查语义错误）
     2. transform （利用各种插件进行代码转换，babel内置jsx，typescript的插件转换）
     3. generator （再利用代码生成工具，将AST转换成代码。）
+  * webpack tree shaking
+    1. 所有 import 标记为 /* harmony import */
+    2. 被使用过的 export 标记为 /* harmony export ([type]) */，其中 [type] 和 webpack 内部有关，可能是 binding, immutable 等等。
+    3. 没被使用过的 export 标记为 /* unused harmony export [FuncName] */，其中 [FuncName] 为 export 的方法名称
+
+    UglifyJSPlugin 把标记的无用代码删除
+
+    作用：找出 JavaScript 上下文中的未引用代码(dead-code)
+    1. 程序中没有执行的代码 (如不可能进入的分支，return 之后的语句等)
+    2. 导致 dead variable 的代码(写入变量之后不再读取的代码)
+
+    ### 不能被移除的代码：
+      1. webpack tree shaking 只处理顶层内容，例如类和对象内部都不会再被分别处理
+      2. 函数调用之后的副作用
+      ```
+      // webpack 并没有删除这行代码，至少没有删除全部。它确实删除了 result2，但保留了 bye() 的调用（压缩的代码表现为 Object(r.a)()）以及 bye() 的定义.
+
+      let result1 = hello()
+      let result2 = bye()
+
+      console.log(result1)
+      // util.js
+      export function hello () {
+        return 'hello'
+      }
+
+      export function bye () {
+        return 'bye'
+      }
+      ```
+
   * webpack loader如何执行，如何实现？
+  ## node
+  * [node require 如何加载文件？](http://www.ruanyifeng.com/blog/2015/05/require.html)
+    * require 加载顺序？
+    1. 如果 X 是内置模块（比如 require('http'）)
+      * 返回该模块
+      * 不再继续执行
+    2. 如果 X 以 "./" 或者 "/" 或者 "../" 开头
+     * 根据 X 所在的父模块，确定 X 的绝对路径。
+     * 将 X 当成文件，依次查找下面文件，只要其中有一个存在，就返回该文件，不再继续执行。
+       * X
+       * X.js
+       * X.json
+       * X.node
+     * 将 X 当成目录，依次查找下面文件，只要其中有一个存在，就返回该文件，不再继续执行。
+       * X/package.json（main字段）
+       * X/index.js
+       * X/index.json
+       * X/index.node
+    3. 如果 X 不带路径
+     * 根据 X 所在的父模块，确定 X 可能的安装目录。
+     * 依次在每个目录中，将 X 当成文件名或目录名加载。
+    4. 抛出 "not found"
+
+  * require 其实内部调用 Module._load 方法
+   ```
+    Module._load = function(request, parent, isMain) {
+      //  计算绝对路径
+      var filename = Module._resolveFilename(request, parent);
+
+      //  第一步：如果有缓存，取出缓存
+      var cachedModule = Module._cache[filename];
+      if (cachedModule) {
+        return cachedModule.exports;
+
+      // 第二步：是否为内置模块
+      if (NativeModule.exists(filename)) {
+        return NativeModule.require(filename);
+      }
+
+      // 第三步：生成模块实例，存入缓存
+      var module = new Module(filename, parent);
+      Module._cache[filename] = module;
+
+      // 第四步：加载模块
+      try {
+        module.load(filename);
+        hadException = false;
+      } finally {
+        if (hadException) {
+          delete Module._cache[filename];
+        }
+      }
+
+      // 第五步：输出模块的exports属性
+      return module.exports;
+    };
+   ```
+
+
 
 
