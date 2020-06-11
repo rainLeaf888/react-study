@@ -1,12 +1,8 @@
 # 面试积累
 * [基础](#基础)
-* [CSS和移动端](#CSS和移动端)
+* [CSS和移动端](./css.md)
 * [浏览器Event Loop](#浏览器EventLoop)
-* [http](#http)
-  * [http1.1 和 http2.0](#http1.1和http2.0)
-  * [三次握手原因](#三次握手原因)
-  * [四位挥手](#四位挥手)
-  * [keep-alive](#keep-alive)
+* [http及网络](./net.md)
 * [Vue](#Vue)
   * [vue框架是如何检测数组变化的？](#vue框架是如何检测数组变化的？)
   * [vue双向绑定如何实现的？](#vue双向绑定如何实现的？)
@@ -18,7 +14,7 @@
 * [跨域](#跨域)
 * [缓存](#缓存)
 * [安全](#安全)
-* [nginx](#nginx)
+* [nginx](./nginx.md)
 * [webpack babel](#webpack)
 * [node](#node)
 ## 基础
@@ -39,6 +35,7 @@
 * jpg 和png 区别
   * jpg: 使用的一种失真压缩标准方法，24 bit真彩色，内容比GIF丰富，不支持动画、不支持透明色
   * png: 格式是无损数据压缩的,PNG格式有8位、24位、32位三种形式,其中8位PNG支持两种不同的透明形式
+
 * 防抖(debounce) : 在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时
 
   应用场景：
@@ -47,64 +44,8 @@
 * 节流(throttle)：在一段固定的时间内只触发一次回调函数
 
 
-## CSS和移动端
-* BFC
-  1. 哪些情况会出现BFC？
-    * float的值不为none。
-    * overflow的值不为visible。
-    * position的值不为relative和static。
-    * display的值为table-cell, table-caption, inline-block中的任何一个
-  2. BFC作用？
-     * 清除float
-     * 防止同一 BFC 容器中的相邻元素间的外边距重叠问题
-     * 形成了BFC的区域不会与float box重叠 (可实现左图右文字效果)
-     * 计算BFC高度时，浮动元素也参与计算（解决了高度塌陷问题）
-    ```
-      <div class='parent'>
-          <div class='float'>浮动元素</div>
-      </div>
-      .parent {
-          overflow:hidden;
-      }
-      .float {
-          float:left;
-      }
-    ```
-* css 实现文本溢出省略效果
-  1. 单行
-    ```
-      overflow: hidden;
-      text-overflow:ellipsis;
-      white-space: nowrap;
-    ```
-* em, rem vw 和vh
-  * em: 参考父元素font-size计算, 具有继承特性
-  * rem: 相对于root节点（html）计算；会给根节点设置一个基础font-size 这种比例，如：1rem = 12px，其他根据这个基准计算
-  * vw 和vh：视口单位  1vw 等于视口宽度的1%
-* 移动端300ms点击延迟
+* for...in , for...of, Object.keys, Object.getOwnPropertyNames, Reflect.ownKeys 区别？
 
-  原因：为了区分是双击缩放，双击滚动，还是打开一个连接
-
-  解决方案:
-
-  1.禁用缩放
-  ```
-  <meta name="viewport" content="user-scalable=no">
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1">
-  ```
-  2. CSS touch-action
-  3. FastClick:
-  实现原理是在检测到touchend事件的时候，会通过DOM自定义事件立即出发模拟一个click事件，并把浏览器在300ms之后的click事件阻止掉
-
-* 移动端点击穿透问题
-  原理：在这 300ms 以内，因为上层元素隐藏或消失了，由于 click 事件的滞后性，同样位置的 DOM 元素触发了 click 事件（如果是 input 则触发了 focus 事件）
-  解决方案：
-  1.只使用touch 替换所有click（最简单）
-* css 实现 点击穿透，虚化
-  pointer-events: none; // 上次是透明图片，下侧button按钮，点击透明图片，能触发button事件
-
-
-* for...in , for...of, Object.keys, Object.getOwnPropertyNames 区别？
   1. for...in: 遍历对象的可枚举属性（包含自有属性、继承自原型的属性），不包含Symbol属性
   2. Object.keys: 遍历对象的可枚举属性(不包含继承自原型的属性及不可枚举的属性和Symbol属性)
   3. Object.getOwnPropertyNames: 返回对象的自有属性（包括可枚举和不可枚举的，不包含继承自原型的属性 和Symbol属性）
@@ -163,53 +104,6 @@ function test () {
 ## 浏览器EventLoop
   1. 宏任务: setTimeout, setInterval, setImmediate, requestAnimationFrame,I/O, UI rendering
   2. 微任务：Promise.then, process.nextTick, MutationObserver
-## http
-* [TCP链接为什么需要三次？关闭需要四次？（A 标示client，B表示server）](https://zhuanlan.zhihu.com/p/58603455)
-
-  ### 三次握手原因
-  ![avatar](./connect-tcp.png)
-   * 三次握手不是TCP本身的要求, 而是为了满足"在不可靠信道上可靠地传输信息"这一需求所导致的
-   * A最后一次还要发送一次确认的目的：是为了防止已失效的连接请求报文突然又传送到B，因而产生错位, 会导致很多资源浪费
-   ![avatar](./tcp.jpg)
-
-  ### 四位挥手
-  ![avatar](./close-tcp.png)
-    * 关闭连接时，当收到对方的FIN报文通知时，它仅仅表示对方没有数据发送给你了；但未必你所有的数据都全部发送给对方了，所以你可能未必会马上会关闭SOCKET,也即你可能还需要发送一些数据给对方之后，再发送FIN报文给对方来表示你同意现在可以关闭连接了
-
-  * 为什么A在TIME-WAIT（A接受到B发生的FIN报文）状态必须等待2MSL的时间呢？
-    1. 为了保证A发生的最后一个ACK报文能够到达B（A发送的ACK报文有可能丢失，如果B没有接受到，A会重新发送连接释放请求，为了处理这种情况）
-    2. 防止“已经失效的连接请求报文段”出现在本链接中
-
-### keep-alive
-
-  * Keep-Alive：timeout  max （持久连接、连接重用）
-
-    1. TCP连接更少，这样就会节约TCP连接在建立、释放过程中，主机和路由器上的CPU和内存开销
-    2. 网络拥塞也减少了，拿到响应的延时也减少了
-
-    #### 当保持长连接时，如何判断一次请求已经完成？
-
-    1.Content-Length: 实体内容的长度(静态资源)
-
-    2.Transfer-Encoding：传输编码，服务端无法知道实体内容的长度，可以通过指定Transfer-Encoding: chunked来告知浏览器当前的编码是将数据分成一块一块传递的。当浏览器接收到一个长度为0的chunked时， 知道当前请求内容已全部接收
-
-
-  * TCP keep-alive: TCP的一种检测TCP连接状况的保鲜机制
-
-    如何检测长时间没有数据报文传输对方还在线，是否需要连接保持？
-    当超过一段时间之后，TCP自动发送一个数据为空的报文（侦测包）给对方，如果对方回应了这个报文，说明对方还在线，连接可以继续保持，如果对方没有报文返回，并且重试了多次之后则认为链接丢失，没有必要保持连接
-
-### http1.1和http2.0
-  * htt1.1:
-
-    tcp连接持久化，Connection: keep-alive;
-
-    浏览器客户端在同一时间，针对同一域名下的请求有一定数量的限制。超过限制数目的请求会被阻塞。(服务端会有连接限制)
-  * http2.0:
-    1. 二进制分帧
-    2. 多路复用 （服务端需要设置 listen  443 ssl http2;）
-    3. HTTP首部压缩（采用HPACK算法）
-    4. 服务器推送
 
 
 ## Vue
@@ -312,6 +206,20 @@ function test () {
     }
   ```
 
+  ### Map 、Set、WeakMap、WeakSet
+  * Set 不重复的集合
+  * WeakSet 不重复的集合
+    * 只能放置对象
+    * 对象都是弱引用，即垃圾回收机制不考虑WeakSet对该对象的引用，其他对象不再引用该对象，垃圾回收机制会自动回收
+  * Map 
+    * 可接受各种类型的值类型的值（包括对象）都可以当作键
+  * WeakMap 
+    * 它只接受对象作为键名（null除外），不接受其他类型的值作为键名，而且键名所指向的对象，不计入垃圾回收机制
+    * 键名是对象的弱引用，即垃圾回收机制不考虑WeakMap对该对象的引用
+  * Map 和 Object区别：
+    1. Map 的键名可接受各种类型的值，且可用for...of 遍历（内部部署了Symbol.iterator属性）
+    2. Object的键名只能接受字符串
+
 
 ## 跨域
 * jsonp 跨域实现原理？是否可以实现post？
@@ -329,7 +237,7 @@ function test () {
   4. 本站脚本可在callback函数里处理所传入的数据
 * CORS 域资源共享
 
-  [chorme 80设置跨域会不起作用?](https://juejin.im/post/5e69fdb16fb9a07cb96b0253)
+  [chorme 80 版本设置跨域会不起作用?](https://juejin.im/post/5e69fdb16fb9a07cb96b0253)
 
   原因：cookie属性中的SameSite（用来限制第三方cookie的属性）默认Lax
   * strict 只有当前网页的URL与请求目标一致，才会带上cookie
@@ -338,7 +246,7 @@ function test () {
 
 * nginx跨域实现具体详情？
 
-  发送请求方式OPTIONS的<font color="red">预检请求</font>，请求header中有Origin字段；
+  发送请求方式OPTIONS的<font color="red">预检请求</font>，<font color='red'>请求header中有Origin字段</font>；
 
   预检请求Response Header返回字段判断是否可跨域;
   1. Access-Control-Allow-Credentials: 是否跨域时携带cookie信息和http认证信息
@@ -380,6 +288,7 @@ function test () {
 
 ### 服务端缓存
 * CDN 缓存图片、文件等静态资源
+* CDN 加速通过将网站的内容缓存在网络边缘（离用户接入网络最近的地方），然后在用户访问网站内容的时候，通过调度系统将用户的请求路由或者引导到离用户接入网络最近或者访问效果最佳的缓存服务器上，有该缓存服务器为用户提供内容服务；相对于直接访问源站，这种方式缩短了用户和内容之间的网络距离，从而达到加速的效果
 
 ### 本地存储
 * cookie
@@ -389,11 +298,18 @@ function test () {
   缺点：大小4kb，可删除，安全性不好，以纯文本的形式记录于文件中需加密
 * sessionStorage
 
-  会话级别存储，当会话结束的时，存储值会被清空；不同窗口值不能共享，窗口关闭值被清空
-  session
+  会话级别存储，当会话结束的时，存储值会被清空；
+
+  不同窗口（包括同源下的不同窗口）值不能共享，窗口关闭值被清空session；
+
 * localStorage
 
-  持久化存储，大小一般5m，存储的值为string
+  持久化存储，大小一般5m，存储的值为string；
+
+  同源下的不同页面是可共享的相同loaclStorage；
+
+  实现跨域localStorage共享：postMessage和iframe相结合的方法
+
 * IndexDB
 
   浏览器提供的本地数据库，不属于关系数据库，接近NoSQL数据库
@@ -407,7 +323,8 @@ function test () {
     用户输入的文本框中包含sql语句；需要对用户输入的进行转义
   * [CRSF：（Cross-site request forgery）跨站请求伪造](https://tech.meituan.com/2018/10/11/fe-security-csrf.html)
 
-    用户登录某网站之后，带有cookie信息，攻击者诱导用户访问第三方网站，第三方网站即拿到用户的cookie信息，冒充用户进行操作
+    用户登录某网站之后，未退出登录，然后访问第三方网站（危险网站），第三方网站中存在隐藏（访问用户登录的网站，浏览器会自动带上cookie，达到冒充用户进行操作）脚本。
+    ![avatar](./csrf.png)
 
     常用的攻击类型：
 
@@ -424,17 +341,6 @@ function test () {
 
         CSRF Token / 双重Cookie验证
 
-## nginx
-* location表达式类型
-  1. ~ 表示执行一个正则匹配，区分大小写
-  2. ~* 表示执行一个正则匹配，不区分大小写
-  3. ^~ 表示普通字符匹配。使用前缀匹配。如果匹配成功，则不再匹配其他location
-  4. = 进行普通字符精确匹配。也就是完全匹配
-* location优先级
-  1. 第一优先级：= 的优先级最高。一旦匹配成功，则不再查找其他匹配项。
-  2. 第二优先级：^~ 类型表达式。一旦匹配成功，则不再查找其他匹配项。
-  3. 第三优先级：正则表达式类型（~ ~*）的优先级次之。如果有多个location的正则能匹配的话，则使用正则表达式最长的那个。
-  4. 第四优先级：常规字符串匹配类型。按前缀匹配
 
 ## webpack
   * .babelrc 中present 和 plugin区别

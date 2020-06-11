@@ -245,8 +245,9 @@ function str(str) {
   const min = Math.min(...Object.values(obj));
   Object.keys(obj).forEach(key => {
     if (obj[key] === min) {
+      var reg = new RegExp(key, 'g'); // 正则
       const arr =  str.split('');
-      str = str.replace(/{key}/g, '')
+      str = str.replace(reg, ''); // 替换
     }
   })
 }

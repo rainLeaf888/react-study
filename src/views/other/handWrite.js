@@ -96,6 +96,39 @@ function limitLoad(urls, handler, limit) {
 }
 // limitLoad(urls, loadImg, 3)
 
+// 实现多个请求并发
+async function logInOrder(urls) {
+  // 并发读取远程URL
+  const textPromises = urls.map(async url => {
+    console.log('fetch')
+    const response = await fetch(url);
+    console.log('response result:', response)
+    return response.text();
+  });
+
+  // 按次序输出
+  for (const textPromise of textPromises) {
+    console.log(await textPromise);
+  }
+}
+
+// logInOrder([...Array(10)].map(() => 'http://caibaojian.com/es6/async.html'));
+
+
+// 实现请求按顺序返回结果
+function logInOrder1(urls) {
+  // 远程读取所有URL
+  const textPromises = urls.map(url => {
+    return fetch(url).then(response => response.text());
+  });
+
+  // 按次序输出
+  textPromises.reduce((chain, textPromise) => {
+    return chain.then(() => textPromise)
+      .then(text => console.log(text));
+  }, Promise.resolve());
+}
+
 
 
 // async await 函数实现原理
@@ -216,7 +249,6 @@ Promise.prototype.finally = function(callback) {
 }
 
 
-
 // 基于ES6 手写 call实现
 // eslint-disable-next-line
 Function.prototype.myCall = function(context) {
@@ -297,7 +329,7 @@ Function.prototype.myBind = function(context) {
     // myBind最后return了Result方法，但是没有运行，这里的this指向运行时的环境
     if(this instanceof Result) {
       // Result可能被当做构造函数来使用
-      // 兼容使用new来创建Result实例
+      // 兼容使用new来创建Result实例，bind传入的this执行忽略
       // 既可以在myBind调用时传参，也可以实例化的时候传参
       return new me(...args, ...arguments);
     }
