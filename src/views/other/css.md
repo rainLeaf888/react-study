@@ -61,7 +61,7 @@ CSS ------> CSSOM
     ```
 ## em, rem vw 和vh
   * em: 参考父元素font-size计算, 具有继承特性
-  * rem: 相对于root节点（html）计算；会给根节点设置一个基础font-size 这种比例，如：1rem = 12px，其他根据这个基准计算
+  * rem: 相对于root节点（html）font-size计算；会给根节点设置一个基础font-size 这种比例，如：1rem = 12px，其他根据这个基准计算
   * vw 和vh：视口单位  1vw 等于视口宽度的1%
 ## 移动端300ms点击延迟
 

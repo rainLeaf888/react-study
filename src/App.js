@@ -10,6 +10,7 @@ import HookPage from './views/hooks';
 // import MobxPage from './views/mobx';
 // 手写js
  import './views/other';
+ import ReactReduxPage from './views/redux/react-redux'
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
       <article>
         <h2>Redux 使用及源码</h2>
         <ReduxPage />
+        <h2>React Redux使用源码</h2>
+        <ReactReduxPage />
         <h2>React Context 使用</h2>
         <ContextPage />
         <h2>mobx 原理解析</h2>
