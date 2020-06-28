@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CSS 动画</title>
+  <style>
+    .move-block{
+      width: 40px;
+      height: 50px;
+      border: 1px solid red;
+      animation: run-around 4s infinite;
+    }
+    @keyframes run-around {
+      0%: {
+        transform: translate(0, 0);
+      }
+      
+      25% {
+        transform: translate(200px, 0);
+      }
+      
+      50% {
+        transform: translate(200px, 200px);
+      }
+      
+      75% {
+        transform: translate(0, 200px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="move-block">移动区</div>
+  </div>
+</body>
+</html>

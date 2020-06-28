@@ -17,8 +17,10 @@
 
 // 2.尾递归概念： 尾调用调用本身
   // 只需要保存一个调用记录，复杂度O(1)
-  function factorial(n, total=1) {      if (n === 1) return total
-     return factorial(n-1, n *total)   }
+  function factorial(n, total=1) {    
+     if (n === 1) return total
+     return factorial(n-1, n *total) 
+   }
   factorial(5)
 
 
