@@ -135,24 +135,38 @@ var mergeRange = (intervals) => {
   if (intervals.length < 2) return intervals;
   const list = intervals.sort((a, b) => a[0] - b[0]); // 数组元素按第一个元素从大到小排序
 
-  return unite(list, 0);
+  // 方案一
+  // return unite(list, 0);
 
-  function unite(arr, i) {
-    if (arr.length -1 === i) {
-      return arr;
-    }
-    // 下个区间的开始值在本区间范围内，则合并一次
-    if (arr[i][0] <= arr[i+1][0] && arr[i+1][0] <= arr[i][1]) {
-      arr[i] = [
-        Math.min(arr[i][0], arr[i+1][0]),
-        Math.max(arr[i][1], arr[i+1][1])
+  // function unite(arr, i) {
+  //   if (arr.length -1 === i) {
+  //     return arr;
+  //   }
+  //   // 下个区间的开始值在本区间范围内，则合并一次
+  //   if (arr[i][0] <= arr[i+1][0] && arr[i+1][0] <= arr[i][1]) {
+  //     arr[i] = [
+  //       Math.min(arr[i][0], arr[i+1][0]),
+  //       Math.max(arr[i][1], arr[i+1][1])
+  //     ]
+  //     arr.splice(i + 1, 1);
+  //   } else {
+  //     i ++;
+  //   }
+  //   return unite(arr, i);
+  // }
+  // 方案二
+  for(let i = 0; i < list.length - 1; i ++) {
+    // 下个区间的开始值在当前范围内容，即合并一次
+    if (list[i][0] < list[i+1][0] && list[i+1][0] < list[i][1]) {
+      list[i] = [
+        Math.min(list[i][0], list[i+1][0]),
+        Math.max(list[i][1], list[i+1][1])
       ]
-      arr.splice(i + 1, 1);
-    } else {
-      i ++;
+      list.splice(i+1, 1);
+      i--;
     }
-    return unite(arr, i);
   }
+  return list;
 }
 
 mergeRange([[1,3],[2,6],[8,10],[15,18]])

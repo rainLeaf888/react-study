@@ -30,6 +30,116 @@
       }
     }
   </style>
+  <script>
+    Promise.resolve().then(() => {
+      console.log(1)
+      Promise.resolve().then(() => {
+        console.log(2)
+      }).then(() => {
+        console.log(4)
+      })
+    })
+    setTimeout(() => {
+      console.log('settimeout1');
+      Promise.resolve().then(() => {
+        console.log('then 5')
+      })
+    }, 0)
+
+    Promise.resolve().then(() => {
+      console.log(3)
+      setTimeout(() => {
+        console.log('settimeout12')
+      }, 0)
+    })
+    console.log('script1')
+    // 最终结果：
+    // script1
+    // 1
+    // 3
+    // 2
+    // 4
+    // settimeout1
+    // then 5
+    // settimeout12
+
+  </script>
+  <!-- <script>
+     setTimeout(() => {
+      console.log('settimeout2')
+    })
+    Promise.resolve().then(() => {
+      console.log(4)
+      Promise.resolve().then(() => {
+        console.log(5)
+      })
+    })
+   
+    Promise.resolve().then(() => {
+      console.log(6)
+    })
+    console.log('script2')
+
+  </script> -->
+  <script>
+    let data = [];
+    const trArr = document.querySelector('body tr');
+    let sortArr = [];
+    let pre = 0;
+    trArr.forEach((tr, index) => {
+      const tds = tr.querySelector('td');
+      const date = tds[0].innerText;
+      data.push({
+        date: date,
+        count: tds[1].innerText
+      });
+      if (index !== 0) {
+        sortArr.push(new Date(pre).getTime() - new Date(date).getTime() > 0);
+      }
+      pre = date;
+    })
+
+    let sortFn = (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime() > 0;
+    if (sortArr.every(n => n)) { // desc
+      sortFn = (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() > 0;
+    }
+    data = data.sort(sortFn);
+
+    trArr.forEach((tr, index) => {
+      const tds = tr.querySelector('td');
+      tds[0].innerText = data[index].date;
+      tds[1].innerText = data[index].count;
+    })
+
+    function split(count) {
+      // if (count % 2 !== 0) {
+      //   return [count]
+      // }
+      let result = [];
+
+      loop(count)
+
+      function loop(count) {
+        let other = count / 2;
+        if (count > 2) {
+          if (other % 2 == 0) {
+            result.push(2);
+            loop(other)
+          } else {
+            let t = Math.floor(other)
+            // TODO 未完成全
+            for(let i = 1; i <= t; i ++) {
+              if (i !== 1 && i !== t && t % i === 0) {
+                result.push(i);
+              }
+            }
+          }
+        }
+      }
+     
+    }
+
+  </script>
 </head>
 <body>
   <div>

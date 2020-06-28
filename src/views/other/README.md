@@ -104,8 +104,14 @@ function test () {
   prefetch: 加载的资源一般不是用于当前页面的，即未来很可能用到的这样一些资源 利用浏览器空闲时间来下载，当进入下一页面，就可直接从 disk cache 里面取，既不影响当前页面的渲染，又提高了其他页面加载渲染的速度
 
 ## 浏览器EventLoop
-  1. 宏任务: setTimeout, setInterval, setImmediate, requestAnimationFrame,I/O, UI rendering
+  1. 宏任务: setTimeout, setInterval, setImmediate, requestAnimationFrame, I/O, UI rendering
   2. 微任务：Promise.then, process.nextTick, MutationObserver
+  * 整段脚本script作为宏任务开始执行
+  * 遇到微任务将其推入微任务队列，宏任务推入宏任务队列
+  * 宏任务执行完毕，检查有没有可执行的微任务
+  * 发现有可执行的微任务，将所有微任务执行完毕
+  * 开始新的宏任务（凡是在执行宏任务过程中遇到微任务都将其推入微任务队列中执行，此宏任务执行完会检测微任务队列），反复如此直到所有任务执行完毕
+  * [执行效果](../css/css.html)
 
 
 ## Vue
@@ -388,7 +394,10 @@ function test () {
       ```
   * webpack打包后的bundle为什么能在浏览器中运行？
 
-    bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过  __webpack_require__ 函数定义了一个可以在浏览器中执行的加载函数来模拟 Node.js 中的 require 语句
+    bundle.js 能直接运行在浏览器中的原因：
+    webpack通过__webpack_require__ 函数模拟了模块的加载（类似于node中的require语法），把定义的模块内容挂载到module.exports上。同时__webpack_require__函数中也对模块缓存做了优化，防止模块二次重新加载，优化性能
+
+    * __webpack_require__.e (require.ensure) 异步加载模块(源码是通过promise实现的异步)
   * webpack 如何编译成es5 浏览器可识别的代码？
 
     Bable 执行过程和原理：
