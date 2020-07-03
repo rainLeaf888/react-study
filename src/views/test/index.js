@@ -252,3 +252,14 @@ test('2*1+2)')
 // 100万数字取最大的5个数
 // 分块，找出每块中最大的5个数，然后比较最大值跟另外一个块的最小值比较
 // 最大堆
+
+// ts type 和interface区别
+// ts 忽略属性怎么定义pick，includes，ignore
+// es6 class 编译之后是 什么样子的
+// babel-poillify 怎么 实现 map，set
+// babel-core 如何配置浏览器版本
+// hook useMemo 和useCallback  useCallback 底层实现（useMemo）
+// vue 和 react 区别， 
+// react diff 时间复杂度 O(n^3)  n^2 两个颗树，两层循环，最后 一个n 查找节点
+// react diff firbe 时间复杂度 O(n), 使用链表，只需要遍历一次
+

@@ -4,7 +4,7 @@
   * [四位挥手](#四位挥手)
   * [keep-alive](#keep-alive)
   * [在浏览器地址栏输入URL](#在浏览器地址栏输入URL)
-* [进程和线程][#进程和线程]
+* [进程和线程](#进程和线程)
 
 ## http
 * [TCP链接为什么需要三次？关闭需要四次？（A 标示client，B表示server）](https://zhuanlan.zhihu.com/p/58603455)
