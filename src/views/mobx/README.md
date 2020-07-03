@@ -1,4 +1,18 @@
-# Mobx 原理解析
+# Mobx 使用及原理解析
+
+## mobx4升级到mobx5:
+    最大变化是mobx5是采用proxy实现的可劫持整个对象，还不是对象的某个属性
+1. shallowMap 废弃了
+2. 动态属性可直接使用 plain object，而不是map
+3. observable.map 的使用在使用 keys(), values() 返回的是迭代器，不可直接遍历
+
+### Mobx4:
+使用defineProperty 实现，故异步调用，@action 和async await 不能解决observable属性改变多次，即触发多次render的结果，必须将 所有observable属性改变放到 runInAction中
+
+### Mobx5 以上：
+使用Proxy实现，故异步调用， @action 和async await  可解决observable属性多次改变，只触发一次render的结果，或者用runInAction
+
+
 
 ## autorun
 ![图片alt](./mobx.jpeg)
@@ -72,3 +86,29 @@ function bindDependencies(derivation: IDerivation) {
   }
 }
 ```
+## 对obserables作出响应
+
+* reaction: 对追踪observable 细粒度的控制
+```
+  reaction(() => data, (data, reaction) => { sideEffect }, options?)
+```
+效果函数只 针对表达式返回值发生变化时触发。（或 reaction需要你生产 效果 函数中所需要的东西） 表达式的返回值作为效果函数的参数传入
+
+* autorun：只会观察在执行提供的函数时所使用的数据， 不会产生新的值
+
+所提供的函数总是立即被触发一次，然后每次它的依赖关系改变时会再次被触发。
+
+* computed: 只有参与计算的属性变化才会会重新计算
+
+
+## 改变observables
+
+* action：只会对当前运行的函数作出反应，而不会对当前运行函数所调用的函数（不包含在当前函数之内）做出反应。 故 不会对 action 中存在的setTimeout，promise的then 或 async语句并且在回调函数中某些状态改变了 作出反应。
+
+* 解决异步方式：
+  1. 直接使用 @action 装饰方法，内部的异步操作直接使用async  await 处理，
+  2. 不使用@action装饰的方法，内部异步返回 操作 state 或 observable 对象，使用 runInAction 包装
+
+* async await:
+
+   await会一直等待之后的表达式执行完之后才会继续执行后面的代码，实际上await是一个让出线程的标志。await后面的表达式会先执行一遍，将await后面的代码加入到microtask中，然后就会跳出整个async函数来执行后面的代码。

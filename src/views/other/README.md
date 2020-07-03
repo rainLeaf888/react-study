@@ -17,7 +17,7 @@
 * [安全](#安全)
 * [nginx](./nginx.md)
 * [webpack babel](#webpack)
-* [webpack 优化](./webpack.md)
+* [webpack及webpack优化](../webpack/README.md)
 * [node](#node)
 ## 基础
 * html5 语义标签
@@ -213,9 +213,9 @@ function test () {
   * WeakSet 不重复的集合
     * 只能放置对象
     * 对象都是弱引用，即垃圾回收机制不考虑WeakSet对该对象的引用，其他对象不再引用该对象，垃圾回收机制会自动回收
-  * Map 
+  * Map
     * 可接受各种类型的值类型的值（包括对象）都可以当作键
-  * WeakMap 
+  * WeakMap
     * 它只接受对象作为键名（null除外），不接受其他类型的值作为键名，而且键名所指向的对象，不计入垃圾回收机制
     * 键名是对象的弱引用，即垃圾回收机制不考虑WeakMap对该对象的引用
   * Map 和 Object区别：
@@ -398,6 +398,17 @@ function test () {
         2. 语义分析 （遍历tokens，检查语义错误）
     2. transform （利用各种插件进行代码转换，babel内置jsx，typescript的插件转换）
     3. generator （再利用代码生成工具，将AST转换成代码。）
+
+    AST ：
+    1. 代码转换
+    2. linting （eslint，tslint） 3. webpack 依赖跟踪
+    4. 代码混淆 uglify 5. vscode 高亮
+    6. 代码覆盖率检测 converge
+
+    [在线生成AST工具](https://astexplorer.net/)
+
+    [estree api](https://github.com/estree/estree)
+
   * webpack tree shaking
     1. 所有 import 标记为 /* harmony import */
     2. 被使用过的 export 标记为 /* harmony export ([type]) */，其中 [type] 和 webpack 内部有关，可能是 binding, immutable 等等。

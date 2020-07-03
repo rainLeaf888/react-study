@@ -16,20 +16,45 @@
       0%: {
         transform: translate(0, 0);
       }
-      
+
       25% {
         transform: translate(200px, 0);
       }
-      
+
       50% {
         transform: translate(200px, 200px);
       }
-      
+
       75% {
         transform: translate(0, 200px);
       }
     }
+    /* CSS 设置table中tr的行间距 */
+    /* table上设置 */
+    /* border-collapse:separate;
+    border-spacing:0px 10px */
   </style>
+  <script>
+    //  二、 滚动分页
+    function scrollPage() {
+      var tableContent = document.querySelector('.ant-table-body');
+      tableContent.addEventListener('scroll', (event) => {
+        // checking whether a selector is well defined
+        console.log('yes, I am listening')
+        let maxScroll = event.target.scrollHeight - event.target.clientHeight
+        let currentScroll = event.target.scrollTop
+        if (currentScroll === maxScroll) {
+            // load more data
+        }
+      })
+    }
+
+  // 三、 滚动定位 可使用dom-scroll-into-view 库
+  function scrollPositon() {
+    var scrollIntoView = require('dom-scroll-into-view');
+    scrollIntoView(source,container,config);
+  }
+  </script>
 </head>
 <body>
   <div>
